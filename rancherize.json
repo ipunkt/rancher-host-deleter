@@ -1,0 +1,25 @@
+{
+    "blueprint": "webserver",
+    "default": {
+        "docker":{
+            "base-image":"busybox"
+        },
+        "service-name": "rancher-delete-host"
+    },
+    "version": 3,
+    "environments": {
+        "local": {
+            "debug-image": true,
+            "sync-user-into-container": true,
+            "expose-port": 9760,
+            "use-app-container": false,
+            "mount-workdir": true,
+            "php": {
+                "version": "7.2"
+            }
+        }
+    },
+    "plugins": {
+        "ipunkt\/rancherize-php72": "RancherizePhp72\\Php72Provider"
+    }
+}
