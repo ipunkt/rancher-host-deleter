@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Http\Response;
+
 Route::get('/', function () {
-    return view('welcome');
+    return \response('');
 });
