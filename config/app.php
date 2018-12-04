@@ -226,4 +226,5 @@ return [
 
     ],
 
+    'secret' => env('APP_SECRET'),
 ];

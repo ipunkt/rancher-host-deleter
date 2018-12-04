@@ -17,9 +17,10 @@ RUN apt-get update \
 
 COPY . /var/www/app/.
 COPY docker/supervisor/*.conf /etc/supervisor/conf.d/
+COPY docker/rancher /usr/local/bin/rancher
 COPY docker/start.sh /usr/local/bin/start.sh
 
-RUN chmod +x /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh && rm -Rf /var/www/app/docker
 
 ENTRYPOINT [ "/usr/local/bin/start.sh" ]
 CMD [ "start" ]

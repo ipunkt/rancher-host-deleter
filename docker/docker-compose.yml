@@ -6,3 +6,5 @@ services:
       dockerfile: docker/Dockerfile
     ports:
       - 8000:80
+    environment:
+      APP_SECRET: test
