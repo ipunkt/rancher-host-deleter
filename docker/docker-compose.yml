@@ -3,7 +3,7 @@ services:
   deleter:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - 8000:80
     environment:
