@@ -1,0 +1,8 @@
+version: '3.3'
+services:
+  deleter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - 8000:80

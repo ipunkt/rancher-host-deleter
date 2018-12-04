@@ -21,6 +21,6 @@ COPY docker/start.sh /usr/local/bin/start.sh
 
 RUN chmod +x /usr/local/bin/start.sh
 
-ENTRYPOINT [ '/usr/local/bin/start.sh' ]
-CMD start
+ENTRYPOINT [ "/usr/local/bin/start.sh" ]
+CMD [ "start" ]
 
