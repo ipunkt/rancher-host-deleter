@@ -16,6 +16,21 @@ class RancherCliDeleter implements Deleter
     private $hostOutputParser;
 
     /**
+     * @var string
+     */
+    protected $rancherUrl = '';
+
+    /**
+     * @var string
+     */
+    protected $accessKey = '';
+
+    /**
+     * @var string
+     */
+    protected $secretKey = '';
+
+    /**
      * RancherCliDeleter constructor.
      * @param HostOutputParser $hostOutputParser
      */
@@ -29,7 +44,13 @@ class RancherCliDeleter implements Deleter
      */
     public function deleteHost(string $hostname)
     {
-        $nodesProcess = new Process(['rancher hosts']);
+        $nodesProcess = new Process([
+            'rancher',
+            '--url', $this->rancherUrl,
+            '--access-key', $this->accessKey,
+            '--secret-key', $this->secretKey,
+            'hosts'
+        ]);
         $nodesProcess->run();
 
         if( !$nodesProcess->isSuccessful() )
@@ -38,5 +59,40 @@ class RancherCliDeleter implements Deleter
         $hostId = $this->hostOutputParser->findHostId($hostname, $nodesProcess->getOutput());
         if($hostId === null)
             throw new DeleteFailedException($hostname, 'Host not found in Rancher');
+
+        $deleteProcess = new Process(['rancher', 'rm', $hostId]);
+        $deleteProcess->run();
+        if( !$deleteProcess->isSuccessful() )
+            throw new DeleteFailedException($hostname, 'Failed to delete node: '.$deleteProcess->getErrorOutput());
+    }
+
+    /**
+     * @param string $rancherUrl
+     * @return RancherCliDeleter
+     */
+    public function setRancherUrl(string $rancherUrl): RancherCliDeleter
+    {
+        $this->rancherUrl = $rancherUrl;
+        return $this;
+    }
+
+    /**
+     * @param string $accessKey
+     * @return RancherCliDeleter
+     */
+    public function setAccessKey(string $accessKey): RancherCliDeleter
+    {
+        $this->accessKey = $accessKey;
+        return $this;
+    }
+
+    /**
+     * @param string $secretKey
+     * @return RancherCliDeleter
+     */
+    public function setSecretKey(string $secretKey): RancherCliDeleter
+    {
+        $this->secretKey = $secretKey;
+        return $this;
     }
 }

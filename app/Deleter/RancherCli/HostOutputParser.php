@@ -7,6 +7,7 @@
 class HostOutputParser
 {
     /**
+     * @param string $hostname
      * @param string $rancherHostsOutput
      * @return mixed
      */
