@@ -72,7 +72,7 @@ class GrafanaWebhookController extends Controller {
         $list = [];
 
         foreach($failedHosts as $failedHost)
-            $lists[$failedHost->getHostname()] = $failedHost->getMessage();
+            $list[$failedHost->getHostname()] = $failedHost->getMessage();
 
         return $list;
     }
