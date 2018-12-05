@@ -8,7 +8,7 @@ RUN apt-get update \
 	&& echo "deb https://packages.sury.org/php/ stretch main" | tee /etc/apt/sources.list.d/php.list \
 	&& apt-get update \
 	&& apt-get install -y php7.2-fpm \
-	    php7.2-zip
+	    php7.2-zip \
         tar \
         supervisor \
         && rm -Rf /var/lib/apt/lists/* \
