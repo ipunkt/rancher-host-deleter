@@ -44,26 +44,12 @@ class RancherCliDeleter implements Deleter
      */
     public function deleteHost(string $hostname)
     {
-        $nodesProcess = new Process([
-            'rancher',
-            '--url', $this->rancherUrl,
-            '--access-key', $this->accessKey,
-            '--secret-key', $this->secretKey,
-            'hosts'
-        ]);
-        $nodesProcess->run();
+        list($hostId, $isDeactivated) = $this->findHostId($hostname);
 
-        if( !$nodesProcess->isSuccessful() )
-            throw new DeleteFailedException($hostname, 'Failed to get node list: '.$nodesProcess->getErrorOutput());
+        if(!$isDeactivated)
+            $this->deactivateHost($hostname, $hostId);
 
-        $hostId = $this->hostOutputParser->findHostId($hostname, $nodesProcess->getOutput());
-        if($hostId === null)
-            throw new DeleteFailedException($hostname, 'Host not found in Rancher');
-
-        $deleteProcess = new Process(['rancher', 'rm', $hostId]);
-        $deleteProcess->run();
-        if( !$deleteProcess->isSuccessful() )
-            throw new DeleteFailedException($hostname, 'Failed to delete node: '.$deleteProcess->getErrorOutput());
+        $this->removeHost($hostname, $hostId);
     }
 
     /**
@@ -94,5 +80,103 @@ class RancherCliDeleter implements Deleter
     {
         $this->secretKey = $secretKey;
         return $this;
+    }
+
+    /**
+     * @param string $hostname
+     * @return array
+     */
+    private function findHostId(string $hostname): array
+    {
+        $nodesProcess = new Process([
+            'rancher',
+            '--url',
+            $this->rancherUrl,
+            '--access-key',
+            $this->accessKey,
+            '--secret-key',
+            $this->secretKey,
+            'hosts',
+        ]);
+        $nodesProcess->run();
+
+        if (!$nodesProcess->isSuccessful()) {
+            throw new DeleteFailedException($hostname, 'Failed to get node list: ' . $nodesProcess->getErrorOutput());
+        }
+
+        $hostId = $this->hostOutputParser->findHostId($hostname, $nodesProcess->getOutput());
+
+        // hostId was found among the active hosts
+        if ( !empty($hostId) )
+            return [$hostId, false];
+
+        $inactiveNodesProcess = new Process([
+            'rancher',
+            '--url',
+            $this->rancherUrl,
+            '--access-key',
+            $this->accessKey,
+            '--secret-key',
+            $this->secretKey,
+            'hosts',
+            '-a'
+        ]);
+        $inactiveNodesProcess->run();
+        $hostId = $this->hostOutputParser->findHostId($hostname, $inactiveNodesProcess->getOutput());
+
+        if (empty($hostId)) {
+            throw new DeleteFailedException($hostname, 'Host not found in Rancher');
+        }
+        return [$hostId, true];
+    }
+
+    /**
+     * @param string $hostname
+     * @param $hostId
+     */
+    private function deactivateHost(string $hostname, $hostId): void
+    {
+        $deactivateProcess = new Process([
+            'rancher',
+            '--url',
+            $this->rancherUrl,
+            '--access-key',
+            $this->accessKey,
+            '--secret-key',
+            $this->secretKey,
+            'deactivate',
+            '--type',
+            'host',
+            $hostId
+        ]);
+        $deactivateProcess->run();
+        if (!$deactivateProcess->isSuccessful()) {
+            throw new DeleteFailedException($hostname, 'Failed to delete node: ' . $deactivateProcess->getOutput());
+        }
+    }
+
+    /**
+     * @param string $hostname
+     * @param $hostId
+     */
+    private function removeHost(string $hostname, $hostId): void
+    {
+        $deleteProcess = new Process([
+            'rancher',
+            '--url',
+            $this->rancherUrl,
+            '--access-key',
+            $this->accessKey,
+            '--secret-key',
+            $this->secretKey,
+            'rm',
+            '--type',
+            'host',
+            $hostId
+        ]);
+        $deleteProcess->run();
+        if (!$deleteProcess->isSuccessful()) {
+            throw new DeleteFailedException($hostname, 'Failed to delete node: ' . $deleteProcess->getOutput());
+        }
     }
 }
