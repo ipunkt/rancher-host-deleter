@@ -19,6 +19,7 @@ COPY . /var/www/app/.
 COPY docker/supervisor/*.conf /etc/supervisor/conf.d/
 COPY docker/rancher /usr/local/bin/rancher
 COPY docker/start.sh /usr/local/bin/start.sh
+WORKDIR /var/www/app
 
 RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/1b137f8bf6db3e79a38a5bc45324414a6b1f9df2/web/installer -O - -q | php -- --quiet \
 	&& php composer.phar --working-dir=/var/www/app install --ignore-platform-reqs \
