@@ -231,5 +231,7 @@ return [
 
     ],
 
+    'deleter' => env('APP_DELETER', 'rancher-cli'),
+
     'secret' => env('APP_SECRET'),
 ];

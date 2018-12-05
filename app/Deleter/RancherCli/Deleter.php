@@ -1,6 +1,5 @@
 <?php namespace App\Deleter\RancherCli;
 
-use App\Deleter\Deleter;
 use App\Deleter\Exceptions\DeleteFailedException;
 use Symfony\Component\Process\Process;
 
@@ -8,7 +7,7 @@ use Symfony\Component\Process\Process;
  * Class RancherCliDeleter
  * @package App\Deleter
  */
-class RancherCliDeleter implements Deleter
+class Deleter implements \App\Deleter\Deleter
 {
     /**
      * @var HostOutputParser
@@ -54,9 +53,9 @@ class RancherCliDeleter implements Deleter
 
     /**
      * @param string $rancherUrl
-     * @return RancherCliDeleter
+     * @return Deleter
      */
-    public function setRancherUrl(string $rancherUrl): RancherCliDeleter
+    public function setRancherUrl(string $rancherUrl): Deleter
     {
         $this->rancherUrl = $rancherUrl;
         return $this;
@@ -64,9 +63,9 @@ class RancherCliDeleter implements Deleter
 
     /**
      * @param string $accessKey
-     * @return RancherCliDeleter
+     * @return Deleter
      */
-    public function setAccessKey(string $accessKey): RancherCliDeleter
+    public function setAccessKey(string $accessKey): Deleter
     {
         $this->accessKey = $accessKey;
         return $this;
@@ -74,9 +73,9 @@ class RancherCliDeleter implements Deleter
 
     /**
      * @param string $secretKey
-     * @return RancherCliDeleter
+     * @return Deleter
      */
-    public function setSecretKey(string $secretKey): RancherCliDeleter
+    public function setSecretKey(string $secretKey): Deleter
     {
         $this->secretKey = $secretKey;
         return $this;
