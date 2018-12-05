@@ -11,6 +11,7 @@ RUN apt-get update \
 	&& apt-get install -y php7.2-fpm \
         tar \
         supervisor \
+        unzip \
         && rm -Rf /var/lib/apt/lists/* \
         && tar -xzf /tmp/rancher-linux-amd64-v0.6.12.tar.gz --one-top-level=/usr/local/bin \
         && mkdir /run/php
