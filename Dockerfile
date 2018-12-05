@@ -7,11 +7,10 @@ RUN apt-get update \
 	&& wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add - \
 	&& echo "deb https://packages.sury.org/php/ stretch main" | tee /etc/apt/sources.list.d/php.list \
 	&& apt-get update \
-	&& apt-cache search php-fpm \
 	&& apt-get install -y php7.2-fpm \
+	    php7.2-zip
         tar \
         supervisor \
-        unzip \
         && rm -Rf /var/lib/apt/lists/* \
         && tar -xzf /tmp/rancher-linux-amd64-v0.6.12.tar.gz --one-top-level=/usr/local/bin \
         && mkdir /run/php
