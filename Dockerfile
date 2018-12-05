@@ -20,7 +20,10 @@ COPY docker/supervisor/*.conf /etc/supervisor/conf.d/
 COPY docker/rancher /usr/local/bin/rancher
 COPY docker/start.sh /usr/local/bin/start.sh
 
-RUN chmod +x /usr/local/bin/start.sh && chown -R www-data.www-data /var/www/app && rm -Rf /var/www/app/docker
+RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/1b137f8bf6db3e79a38a5bc45324414a6b1f9df2/web/installer -O - -q | php -- --quiet \
+	&& php composer.phar --working-dir=/var/www/app install --ignore-platform-reqs \
+	&& rm composer.phar \
+	 && chmod +x /usr/local/bin/start.sh && chown -R www-data.www-data /var/www/app && rm -Rf /var/www/app/docker
 
 ENTRYPOINT [ "/usr/local/bin/start.sh" ]
 CMD [ "start" ]
