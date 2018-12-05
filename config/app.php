@@ -231,6 +231,8 @@ return [
 
     ],
 
+    'parser' => env('APP_PARSER', 'grafana'),
+
     'deleter' => env('APP_DELETER', 'rancher-cli'),
 
     'secret' => env('APP_SECRET'),

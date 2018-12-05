@@ -11,7 +11,17 @@ class ParserProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind(HostnameParser::class, SimpleParser::class);
+        switch ( config('app.parser') ) {
+            case 'simple':
+                $this->app->bind(HostnameParser::class, SimpleParser::class);
+                break;
+            case 'log':
+                $this->app->bind(HostnameParser::class, LogParser::class);
+                break;
+            default:
+                $this->app->bind(HostnameParser::class, GrafanaParser::class);
+                break;
+        }
     }
 
 }

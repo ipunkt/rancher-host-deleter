@@ -20,13 +20,13 @@ class Deleter implements \App\Deleter\Deleter
         $messageData = [
             'text' => "Received request to delete $hostname"
         ];
-        file_get_contents($this->url, false, [
+        file_get_contents($this->url, false, stream_context_create([
             'http' => [
                 'method' => 'POST',
                 'header' => 'Content-Type: application/json',
                 'content' => json_encode($messageData)
             ]
-        ]);
+        ]));
     }
 
     /**
